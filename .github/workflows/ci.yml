@@ -1,0 +1,44 @@
+name: build-and-lint
+
+on:
+  push:
+    branches: ["main", "dev"]
+
+  pull_request:
+    branches: ["main", "dev"]
+
+jobs:
+  build-and-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+
+      - name: node setup
+        uses: actions/setup-node@v3
+
+        with:
+          node-version: 20
+
+      - name: Installing backend dependencies
+        working-directory: server
+        run: npm ci
+
+      - name: lint backend
+        working-directory: server
+        run: npm run lint
+
+      - name: Installing frontend dependencies
+        working-directory: client
+        run: npm ci
+
+      - name: lint frontend
+        working-directory: client
+        run: npm run lint
+
+      - name: build backend image
+        run: docker build -t mern-backend ./server
+
+      - name: build frontend image
+        run: docker build -t mern-frontend ./client
