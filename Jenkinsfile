@@ -12,21 +12,20 @@ pipeline{
 
         stage('checkout repo'){
             steps{
-                git url: "https://github.com/patilayush04/Devops_project", branch: "main"
-
+                git url: "https://github.com/patilayush04/Devops_project.git", branch: "main"
             }
         }
 
         stage('prepare .env'){
             steps{
-
                 sh '''
                 mkdir -p server
-cat > server/.env << EOF
-MONGO_URI=$MONGO_URI
+cat > server/.env <<EOF
 PORT=$PORT
+MONGO_URI=$MONGO_URI
 EOF
 '''
+
             }
         }
 
@@ -36,25 +35,26 @@ EOF
                 echo "build backend image"
                 docker build -t $BACKEND_IMAGE ./server
 
-                echo "build frontend image"
+                echo "build frontend image" 
                 docker build -t $FRONTEND_IMAGE ./client --build-arg VITE_API_URL=http://localhost:5000/api
                 '''
             }
         }
 
-        stage('use of compose to run app'){
+        stage('use of docker compose'){
             steps{
                 sh '''
-                echo "run app using compose"
-                docker compose up -d --no-build
 
-                echo "show running containers"
-                docker ps
+                echo "starting mern-app using docker compose "
+                docker compose up -d
 
-                echo "==== backend logs ===="
+                echo "show all running container"
+                docker ps 
+
+                echo " ==== docker build ==="
                 docker logs backend || true
 
-                echo "==== backend logs ===="
+                echo " ==== docker build ==="
                 docker logs frontend || true
 
                 '''
