@@ -46,7 +46,7 @@ EOF
             steps{
                 sh '''
                 echo "run app using compose"
-                docker compose up -d 
+                docker compose up -d --no-build
 
                 echo "show running containers"
                 docker ps
