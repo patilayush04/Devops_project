@@ -44,9 +44,6 @@ services:
     image: mongo:6
     container_name: mongo_db
     restart: always
-    ports:
-      - "27017:27017"
-
     volumes:
       - mongo_data:/data/db
 
@@ -56,14 +53,14 @@ services:
   backend:
     build:
       context: ./server
-    
+
     container_name: backend
     restart: always
-    ports:
-      - "5000:5000"
-
     env_file:
       - ./server/.env
+
+    ports:
+      - "5000:5000"
 
     depends_on:
       - mongo
@@ -77,11 +74,11 @@ services:
 
     container_name: frontend
     restart: always
-    ports:
-      - "5173:5173"
-
     env_file:
       - ./client/.env
+
+    ports:
+      - "5173:5173"
 
     depends_on:
       - backend
@@ -95,6 +92,3 @@ volumes:
 networks:
   demo-net:
     driver: bridge
-    
-
-    
